@@ -1,0 +1,21 @@
+/* App level specific styles if needed */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Carousel: desktop shows inside hero overlay, mobile shows here */
+.mobile-carousel-section {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-carousel-section {
+    display: block;
+  }
+}

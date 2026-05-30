@@ -1,0 +1,9 @@
+const SHOPIFY_STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || 'satrangi-boutique-2.myshopify.com';
+const SHOPIFY_PUBLIC_ACCESS_TOKEN = import.meta.env.VITE_SHOPIFY_PUBLIC_ACCESS_TOKEN || '';
+const SHOPIFY_API_VERSION = import.meta.env.VITE_SHOPIFY_API_VERSION || '2026-04';
+
+export {
+  SHOPIFY_STORE_DOMAIN,
+  SHOPIFY_PUBLIC_ACCESS_TOKEN,
+  SHOPIFY_API_VERSION,
+};
