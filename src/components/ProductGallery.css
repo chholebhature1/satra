@@ -133,7 +133,7 @@
 .product-image-container {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 3/4;
+  aspect-ratio: 4 / 5;
   margin-bottom: 1.5rem;
   border-radius: 8px;
   background: var(--surface-beige);
@@ -143,7 +143,8 @@
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--surface-beige);
   transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -274,7 +275,8 @@
 .product-image-container shopify-media unpic-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--surface-beige);
   transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: block;
 }
@@ -326,6 +328,6 @@
 
   .gallery-loading-grid .product-card-skeleton:first-child {
     grid-column: auto;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 5;
   }
 }

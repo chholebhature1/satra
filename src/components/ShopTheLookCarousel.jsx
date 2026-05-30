@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { SHOPIFY_STORE_DOMAIN } from '../lib/shopifyConfig';
 
 
 const STL_CSS = `
@@ -99,6 +100,10 @@ const STL_CSS = `
     overflow: hidden !important;
   }
 
+  .stl-swiper .swiper-slide {
+    height: auto !important;
+  }
+
   .stl-swiper shopify-list-context.swiper-wrapper {
     display: flex !important;
     transition-timing-function: linear !important;
@@ -118,7 +123,7 @@ const STL_CSS = `
   /* ── Card ── */
   .stl-card {
     width: 100%;
-    height: 100%;
+    height: auto;
     background: #FFFDF8;
     border: 1px solid #E2DDD0;
     border-radius: 4px;
@@ -152,15 +157,18 @@ const STL_CSS = `
 
   /* Image area */
   .stl-card__image-area {
-    flex: 0 0 65%;
+    flex: 0 0 auto;
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     position: relative;
+    background: var(--cream-light);
   }
 
   .stl-card__image-area img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--cream-light);
     display: block;
     transition: transform 0.6s ease, filter 0.6s ease;
   }
@@ -182,7 +190,7 @@ const STL_CSS = `
 
   /* Info area */
   .stl-card__info {
-    flex: 0 0 35%;
+    flex: 0 0 auto;
     background: #FFFDF8;
     padding: 14px 16px 16px;
     display: flex;
@@ -271,7 +279,8 @@ const STL_CSS = `
   .stl-card__image-area shopify-media unpic-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--cream-light);
     display: block;
   }
 
@@ -387,12 +396,12 @@ const STL_CSS = `
 
 const STL_SLIDE_TEMPLATE = `
   <div class="swiper-slide">
-    <div class="stl-card" data-rental="false">
+    <div class="stl-card" data-rental="false" onclick="window.__openShopifyProductPage(this)" role="link" tabindex="0">
       <div class="stl-card__gold-bar"></div>
       <div class="stl-card__image-area">
         <shopify-media
           query="product.selectedOrFirstAvailableVariant.image"
-          width="280" height="182"
+          width="400" height="500"
           layout="constrained"
         ></shopify-media>
       </div>
@@ -402,13 +411,24 @@ const STL_SLIDE_TEMPLATE = `
         <p class="stl-card__price"><shopify-money query="product.selectedOrFirstAvailableVariant.price" format="money_with_currency"></shopify-money></p>
         <span class="stl-product-handle" hidden><shopify-data query="product.handle"></shopify-data></span>
         <span class="stl-variant-id" hidden><shopify-data query="product.selectedOrFirstAvailableVariant.id"></shopify-data></span>
-        <button class="stl-view-link" onclick="window.__openLookbookLightbox(this)">View Details &#8594;</button>
+        <button class="stl-view-link" onclick="window.__openShopifyProductPage(this)">View Product &#8594;</button>
       </div>
     </div>
   </div>
 `;
 
 const HERO_CAROUSEL_COLLECTION_HANDLE = 'hero-carousel';
+
+const readText = (element, selector, fallback = '') => {
+  const target = element?.querySelector(selector);
+  return target?.textContent?.trim() || fallback;
+};
+
+const buildShopifyProductUrl = (handle) => {
+  if (!handle) return '';
+
+  return `https://${SHOPIFY_STORE_DOMAIN}/products/${encodeURIComponent(handle)}`;
+};
 
 const ShopTheLookCarousel = () => {
   const swiperRef    = useRef(null);
@@ -437,6 +457,24 @@ const ShopTheLookCarousel = () => {
         try { cleanup?.(); } catch (_) {}
       }
     };
+
+    const openShopifyProductPage = (sourceElement) => {
+      const card = sourceElement?.closest?.('.product-card, .stl-card') || sourceElement;
+      if (!card) return;
+
+      const handle = readText(card, '.product-handle, .stl-product-handle', '');
+      const productUrl = buildShopifyProductUrl(handle);
+      if (!productUrl) return;
+
+      window.location.assign(productUrl);
+    };
+
+    window.__openShopifyProductPage = openShopifyProductPage;
+    cleanupFns.push(() => {
+      if (window.__openShopifyProductPage === openShopifyProductPage) {
+        delete window.__openShopifyProductPage;
+      }
+    });
 
     const initSwiper = () => {
       const swiperElement = resolveSwiperElement();
@@ -476,6 +514,7 @@ const ShopTheLookCarousel = () => {
         observer: true,
         observeParents: true,
         observeSlideChildren: true,
+        autoHeight: true,
       });
 
       const advanceTimer = window.setInterval(() => {

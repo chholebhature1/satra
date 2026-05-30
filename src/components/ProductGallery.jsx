@@ -45,7 +45,7 @@ const ProductGallery = () => {
           <div class="product-image-container">
             <shopify-media
               query="product.selectedOrFirstAvailableVariant.image"
-              width="400" height="533"
+              width="400" height="500"
               layout="constrained"
             ></shopify-media>
           </div>

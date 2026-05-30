@@ -42,11 +42,11 @@ function App() {
           <div className="mobile-carousel-section">
             <ShopTheLookCarousel />
           </div>
-          <VideoHighlights />
           <ServicesSection />
           <About />
           <ProductGallery />
           <TestimonialsSection />
+          <VideoHighlights />
           <ContactSection />
         </main>
         <Footer />
