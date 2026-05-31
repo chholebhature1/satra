@@ -256,6 +256,10 @@
     height: auto;
   }
 
+  .hero-video-wrapper .hero-generated-video {
+    object-position: left center;
+  }
+
   .hero-carousel-overlay {
     display: none;
   }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { addVariantToCart, openCartDrawer } from '../lib/shopifyStorefrontCart';
+import { addVariantToCart, buyNowVariant, openCartDrawer } from '../lib/shopifyStorefrontCart';
 import { fetchProductDetails } from '../lib/shopifyProductDetails';
+import { SHOPIFY_STORE_DOMAIN } from '../lib/shopifyConfig';
 import './LookbookLightbox.css';
 
 const LIGHTBOX_ID = 'lookbook-lightbox';
@@ -100,6 +101,12 @@ const buildEnquiryUrl = ({ title, price, variantLabel }) => {
   ].filter(Boolean);
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(details.join('\n'))}`;
+};
+
+const buildShopifyProductUrl = (handle) => {
+  if (!handle) return '';
+
+  return `https://${SHOPIFY_STORE_DOMAIN}/products/${encodeURIComponent(handle)}`;
 };
 
 const renderActiveMedia = (media, title) => {
@@ -291,6 +298,37 @@ const LookbookLightbox = () => {
     }
   };
 
+  const handleBuyNow = async () => {
+    const variantId = selectedVariant?.id || look.variantId;
+
+    if (!variantId) {
+      setStatusMessage('Missing product variant details for this look.');
+      return;
+    }
+
+    setBusyAction('buy');
+    setStatusMessage('Redirecting to checkout...');
+
+    try {
+      await buyNowVariant(variantId, 1);
+    } catch (error) {
+      setStatusMessage(error?.message || 'Could not start checkout for this look.');
+    } finally {
+      setBusyAction('');
+    }
+  };
+
+  const handleViewDetails = () => {
+    const productUrl = buildShopifyProductUrl(look.handle);
+
+    if (!productUrl) {
+      setStatusMessage('Missing product page details for this look.');
+      return;
+    }
+
+    window.location.assign(productUrl);
+  };
+
   return (
     <dialog
       id={LIGHTBOX_ID}
@@ -383,23 +421,39 @@ const LookbookLightbox = () => {
           )}
 
           <div className="lookbook-lightbox__actions">
-            <a
-              href={enquiryUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="lookbook-lightbox__cta lookbook-lightbox__cta--primary"
-            >
-              Enquire Now
-            </a>
             <button
               type="button"
-              className="lookbook-lightbox__cta lookbook-lightbox__cta--secondary"
+              className="lookbook-lightbox__cta lookbook-lightbox__cta--primary"
               onClick={handleAddToCart}
               disabled={busyAction !== '' || !canAddToCart}
             >
               {busyAction === 'cart' ? 'Adding...' : 'Add to Cart'}
             </button>
+            <button
+              type="button"
+              className="lookbook-lightbox__cta lookbook-lightbox__cta--secondary"
+              onClick={handleBuyNow}
+              disabled={busyAction !== '' || !canAddToCart}
+            >
+              {busyAction === 'buy' ? 'Buying...' : 'Buy Now'}
+            </button>
+            <button
+              type="button"
+              className="lookbook-lightbox__cta lookbook-lightbox__cta--tertiary"
+              onClick={handleViewDetails}
+            >
+              View Details
+            </button>
           </div>
+
+          <a
+            href={enquiryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="lookbook-lightbox__enquiry-link"
+          >
+            Need fit or styling help? Enquire on WhatsApp
+          </a>
 
           {!canAddToCart && (
             <p className="lookbook-lightbox__status">This option is available by enquiry only.</p>

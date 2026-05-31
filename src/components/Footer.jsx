@@ -96,8 +96,8 @@ const Footer = () => {
         <div className="footer-bottom">
           <p>&copy; {new Date().getFullYear()} Satrangi Designer Studio by Rangmohini. All rights reserved.</p>
           <div className="footer-bottom-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
+            <a href="#home">Back to Top</a>
+            <a href="#contact">Book Appointment</a>
           </div>
         </div>
       </div>

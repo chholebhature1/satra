@@ -183,6 +183,22 @@
   gap: 0;
 }
 
+.navbar-services-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  min-width: 100%;
+}
+
+.navbar-services-group {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-services-group--duplicate {
+  display: none;
+}
+
 .navbar-services-scroll::-webkit-scrollbar {
   display: none;
 }
@@ -558,7 +574,29 @@
   }
 
   .navbar-services-scroll {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: none;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+
+  .navbar-services-group--duplicate {
+    display: flex;
+  }
+
+  .service-pill {
+    font-size: 0.62rem;
+    padding: 0 0.7rem;
+    letter-spacing: 0.08em;
+  }
+
+  .service-pill--sale {
+    margin: auto 0.35rem;
+    padding: 0 0.65rem;
   }
 
   /* Hamburger: bordered rounded-square, 44px touch target */

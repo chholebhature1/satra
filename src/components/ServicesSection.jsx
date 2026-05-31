@@ -5,6 +5,7 @@ import './ServicesSection.css';
 const signatureServices = [
   {
     id: 1,
+    anchorId: 'bridal-couture',
     icon: Sparkles,
     title: 'Bridal Couture',
     desc: 'Exquisite custom-crafted bridal lehengas, hand-embroidered wedding sarees, and magnificent luxury designer ensembles tailored to make your big day unforgettable.',
@@ -12,6 +13,7 @@ const signatureServices = [
   },
   {
     id: 2,
+    anchorId: 'jewellery-on-rent',
     icon: Gem,
     title: 'Jewellery on Rent',
     desc: 'Statement bridal & occasion jewellery on rent — kundan, polki & gold-plated sets.',
@@ -19,6 +21,7 @@ const signatureServices = [
   },
   {
     id: 3,
+    anchorId: 'customisation',
     icon: Scissors,
     title: 'Customisation',
     desc: 'Your fabric, your vision, our craft. Every stitch tailored exclusively for you.',
@@ -29,6 +32,7 @@ const signatureServices = [
 const wardrobeServices = [
   {
     id: 4,
+    anchorId: 'sarees',
     icon: Layers,
     title: 'Sarees',
     desc: 'Silk, georgette, banarasi & designer sarees curated for every occasion.',
@@ -36,6 +40,7 @@ const wardrobeServices = [
   },
   {
     id: 5,
+    anchorId: 'lehenga-on-rent',
     icon: Star,
     title: 'Lehenga on Rent',
     desc: 'Bridal & party lehengas available on rent. Wear luxury without the full price.',
@@ -43,6 +48,7 @@ const wardrobeServices = [
   },
   {
     id: 6,
+    anchorId: 'suits',
     icon: Ruler,
     title: 'Suits (Stitched / Unstitched)',
     desc: 'Designer suits in ready-to-wear and fabric form — festive, casual & formal.',
@@ -75,7 +81,7 @@ const renderServiceCard = (service, variant = '') => {
   const Icon = service.icon;
 
   return (
-    <div className={`service-card${variant ? ` service-card--${variant}` : ''}`} key={service.id}>
+    <div className={`service-card${variant ? ` service-card--${variant}` : ''}`} key={service.id} id={service.anchorId}>
       {/* Background fabric image overlay */}
       {service.bg && (
         <div 
@@ -129,7 +135,7 @@ const ServicesSection = () => {
           </div>
         </div>
 
-        <div className="services-links-panel">
+        <div className="services-links-panel" id="studio-support">
           <p className="services-tier-eyebrow">Studio support</p>
           <div className="services-links-row">
             {studioSupport.map((service) => (

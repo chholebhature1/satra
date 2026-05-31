@@ -84,21 +84,20 @@ const ProductGallery = () => {
     const cardTemplate = `
       <template>
         <div class="product-card" data-rental="${isRental ? 'true' : 'false'}">
-          <div class="product-image-container">
+          <div class="product-image-container" onclick="window.__openLookbookLightbox(this)" role="button" tabindex="0" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.__openLookbookLightbox(this); }">
             <shopify-media
               query="product.selectedOrFirstAvailableVariant.image"
               width="400" height="500"
               layout="constrained"
             ></shopify-media>
-            
-            <!-- Elegant Hover-Reveal Glass Actions Panel -->
-            <div class="product-card-hover-actions">
-              <div class="product-card-hover-row">
-                <button type="button" class="gallery-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
-                <button type="button" class="gallery-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
-              </div>
-              <button type="button" class="gallery-action-btn view-details" onclick="event.stopPropagation(); window.__openLookbookLightbox(this)">View Details</button>
+            <button type="button" class="product-image-trigger" aria-label="Open lookbook details for this product" onclick="event.stopPropagation(); window.__openLookbookLightbox(this)"></button>
+          </div>
+          <div class="product-card-actions">
+            <div class="product-card-actions-row">
+              <button type="button" class="gallery-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
+              <button type="button" class="gallery-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
             </div>
+            <button type="button" class="gallery-action-btn view-details" onclick="event.stopPropagation(); window.__openLookbookLightbox(this)">View Details</button>
           </div>
           <div class="product-info">
             <h3 class="product-name"><shopify-data query="product.title"></shopify-data></h3>

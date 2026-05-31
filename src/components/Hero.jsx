@@ -20,7 +20,7 @@ const Hero = () => {
           </p>
 
           <h1 className="hero-title fade-in">
-            Delhi's Premier<br />
+            Delhi's Finest<br />
             <span className="hero-title-accent">Designer Boutique</span>
           </h1>
 

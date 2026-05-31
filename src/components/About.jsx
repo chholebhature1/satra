@@ -37,7 +37,11 @@ const About = () => {
         </div>
         
         <div className="about-content animate-on-scroll fade-in-late">
-          <h2 className="heading-lg">The Satrangi Collective <br/><span className="text-gold">Crafting Your Vision</span></h2>
+          <div className="about-heading-group">
+            <p className="about-heading-eyebrow">Team Satrangi Boutique</p>
+            <h2 className="heading-lg">Your Design's four pillar</h2>
+            <p className="about-heading-subtitle">By Rangmohini</p>
+          </div>
           <div className="about-text">
             <p>
               At the heart of Satrangi lies a passionate collective of master designers, visionary stylists, and multi-generational <em>Karigars</em> (artisans) who breathe life into fine textiles. Nestled in New Delhi's rich heritage of craft, our boutique studio is a creative sanctuary where legacy hand-embroidery meets contemporary elegance, transforming raw silks and soft georgettes into wearable poetry.

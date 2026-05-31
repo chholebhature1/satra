@@ -163,6 +163,29 @@ const STL_CSS = `
     overflow: hidden;
     position: relative;
     background: var(--cream-light);
+    cursor: pointer;
+  }
+
+  .stl-image-trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+  }
+
+  .stl-image-trigger:focus-visible {
+    outline: 2px solid #C49A3C;
+    outline-offset: -4px;
+  }
+
+  .stl-card__image-area:focus-visible {
+    outline: 2px solid #C49A3C;
+    outline-offset: 4px;
   }
 
   .stl-card__image-area img {
@@ -368,19 +391,32 @@ const STL_CSS = `
   }
 
   /* ── Pagination Dots ── */
+  .stl-swiper .swiper-pagination {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 14px;
+  }
+
   .stl-swiper .swiper-pagination-bullet {
-    width: 5px !important;
-    height: 5px !important;
+    width: 8px !important;
+    height: 8px !important;
+    margin: 0 !important;
     background: #C8BFB0 !important;
     opacity: 1 !important;
-    border-radius: 50% !important;
-    transition: all 0.3s ease !important;
+    border-radius: 999px !important;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease, background 0.3s ease !important;
   }
 
   .stl-swiper .swiper-pagination-bullet-active {
-    width: 20px !important;
-    border-radius: 2px !important;
     background: #16362A !important;
+    transform: scale(1.45);
+    box-shadow: 0 0 0 3px rgba(22, 54, 42, 0.08);
   }
 
   /* ── CTA ── */
@@ -433,6 +469,25 @@ const STL_CSS = `
       padding: 8px 6px !important;
       font-size: 9px !important;
     }
+
+    .stl-card__actions {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .stl-view-link {
+      max-height: none !important;
+      opacity: 1 !important;
+      margin-top: 10px;
+    }
+
+    .swiper-slide-active .stl-card:hover .stl-view-link {
+      max-height: none;
+      opacity: 1;
+    }
+
     .stl-header {
       margin-bottom: 32px;
     }
@@ -447,12 +502,13 @@ const STL_SLIDE_TEMPLATE = `
   <div class="swiper-slide">
     <div class="stl-card" data-rental="false" onclick="window.__openShopifyProductPage(this)" role="link" tabindex="0">
       <div class="stl-card__gold-bar"></div>
-      <div class="stl-card__image-area">
+      <div class="stl-card__image-area" onclick="event.stopPropagation(); window.__openLookbookLightbox(this)" role="button" tabindex="0" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.stopPropagation(); window.__openLookbookLightbox(this); }">
         <shopify-media
           query="product.selectedOrFirstAvailableVariant.image"
           width="400" height="500"
           layout="constrained"
         ></shopify-media>
+        <button type="button" class="stl-image-trigger" aria-label="Open lookbook details for this product" onclick="event.stopPropagation(); window.__openLookbookLightbox(this)"></button>
       </div>
       <div class="stl-card__info">
         <span class="stl-badge"><shopify-data query="product.productType"></shopify-data></span>
@@ -464,7 +520,7 @@ const STL_SLIDE_TEMPLATE = `
           <button class="stl-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
           <button class="stl-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
         </div>
-        <button class="stl-view-link" onclick="window.__openShopifyProductPage(this)">View Product &#8594;</button>
+        <button class="stl-view-link" onclick="window.__openShopifyProductPage(this)">View Details &#8594;</button>
       </div>
     </div>
   </div>

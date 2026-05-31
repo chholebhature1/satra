@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, User, X, Menu, ShoppingBag } from 'lucide-react';
 import './Navbar.css';
 import {
@@ -28,11 +28,11 @@ const SHOPIFY_SEARCH_QUERY = `
 `;
 
 const searchableItems = [
-  { name: 'Lehenga on Rent',            tag: 'Service',         href: '#services'    },
-  { name: 'Jewellery on Rent',          tag: 'Service',         href: '#services'    },
-  { name: 'Customisation',              tag: 'Service',         href: '#services'    },
-  { name: 'Designer Advice',            tag: 'Service',         href: '#services'    },
-  { name: 'Kids Customisation',         tag: 'Service',         href: '#services'    },
+  { name: 'Lehenga on Rent',            tag: 'Service',         href: '#lehenga-on-rent'       },
+  { name: 'Jewellery on Rent',          tag: 'Service',         href: '#jewellery-on-rent'     },
+  { name: 'Customisation',              tag: 'Service',         href: '#customisation'         },
+  { name: 'Designer Advice',            tag: 'Service',         href: '#studio-support'        },
+  { name: 'Kids Customisation',         tag: 'Service',         href: '#studio-support'        },
   { name: 'Sarees',                     tag: 'Collection',      href: '#collections' },
   { name: 'Suits',                      tag: 'Collection',      href: '#collections' },
   { name: 'Bridal Wear',                tag: 'Bridal',          href: '#collections' },
@@ -46,18 +46,29 @@ const navLinks = [
 ];
 
 const serviceLinks = [
-  { label: '✦ New Arrivals',    href: '#collections', type: 'new'  },
-  { label: 'Lehenga on Rent',   href: '#services'                  },
-  { label: 'Jewellery on Rent', href: '#services'                  },
-  { label: 'Sarees',            href: '#collections'               },
-  { label: 'Suits',             href: '#collections'               },
-  { label: 'Customisation',     href: '#services'                  },
-  { label: 'Kids Wear',         href: '#services'                  },
-  { label: 'Bridal',            href: '#collections'               },
-  { label: 'Designer Advice',   href: '#services'                  },
-  { label: 'Bridal Couture',    href: '#services'                  },
-  { label: 'Sale',              href: '#collections', type: 'sale' },
+  { label: '✦ New Arrivals',    href: '#collections',            type: 'new'  },
+  { label: 'Lehenga on Rent',   href: '#lehenga-on-rent'                    },
+  { label: 'Jewellery on Rent', href: '#jewellery-on-rent'                  },
+  { label: 'Sarees',            href: '#sarees'                             },
+  { label: 'Suits',             href: '#suits'                              },
+  { label: 'Customisation',     href: '#customisation'                      },
+  { label: 'Kids Wear',         href: '#studio-support'                     },
+  { label: 'Bridal',            href: '#bridal-couture'                     },
+  { label: 'Designer Advice',   href: '#studio-support'                     },
+  { label: 'Bridal Couture',    href: '#bridal-couture'                     },
+  { label: 'Sale',              href: '#collections',            type: 'sale' },
 ];
+
+const renderServicePill = (service, keyPrefix = '') => (
+  <a
+    key={`${keyPrefix}${service.label}`}
+    href={service.href}
+    className={`service-pill${service.type ? ` service-pill--${service.type}` : ''}`}
+    tabIndex={keyPrefix ? -1 : 0}
+  >
+    {service.label}
+  </a>
+);
 
 const Navbar = () => {
   const [scrolled, setScrolled]           = useState(false);
@@ -68,6 +79,19 @@ const Navbar = () => {
   const [cartCount, setCartCount]         = useState(0);
   const [liveProducts, setLiveProducts]   = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const servicesScrollRef = useRef(null);
+
+  const pauseServiceScroll = () => {
+    if (servicesScrollRef.current) {
+      servicesScrollRef.current.dataset.pausedUntil = String(performance.now() + 2200);
+    }
+  };
+
+  const holdServiceScroll = () => {
+    if (servicesScrollRef.current) {
+      servicesScrollRef.current.dataset.pausedUntil = String(Number.POSITIVE_INFINITY);
+    }
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -169,6 +193,112 @@ const Navbar = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const scroller = servicesScrollRef.current;
+    if (!scroller) {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 900px)');
+    let frameId = null;
+    let lastTime = performance.now();
+
+    const stop = () => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+        frameId = null;
+      }
+    };
+
+    const start = () => {
+      const animate = (time) => {
+        const pausedUntil = Number(scroller.dataset.pausedUntil || '0');
+
+        if (!mediaQuery.matches) {
+          frameId = null;
+          return;
+        }
+
+        if (time < pausedUntil) {
+          lastTime = time;
+          frameId = window.requestAnimationFrame(animate);
+          return;
+        }
+
+        const delta = time - lastTime;
+        lastTime = time;
+
+        const maxScroll = scroller.scrollWidth / 2;
+
+        if (maxScroll > 0) {
+          scroller.scrollLeft += (72 * delta) / 1000;
+
+          if (scroller.scrollLeft >= maxScroll) {
+            scroller.scrollLeft -= maxScroll;
+          }
+        }
+
+        frameId = window.requestAnimationFrame(animate);
+      };
+
+      frameId = window.requestAnimationFrame(animate);
+    };
+
+    const sync = () => {
+      stop();
+      lastTime = performance.now();
+      scroller.dataset.pausedUntil = '0';
+
+      if (mediaQuery.matches) {
+        start();
+      } else {
+        scroller.scrollLeft = 0;
+      }
+    };
+
+    const handleTouchStart = () => {
+      holdServiceScroll();
+      lastTime = performance.now();
+    };
+
+    const handleTouchEnd = () => {
+      pauseServiceScroll();
+      lastTime = performance.now();
+    };
+
+    const handlePointerDown = (event) => {
+      if (event.pointerType === 'touch') {
+        handleTouchStart();
+      }
+    };
+
+    const handlePointerUp = (event) => {
+      if (event.pointerType === 'touch') {
+        handleTouchEnd();
+      }
+    };
+
+    sync();
+    mediaQuery.addEventListener('change', sync);
+    scroller.addEventListener('touchstart', handleTouchStart, { passive: true });
+    scroller.addEventListener('touchend', handleTouchEnd, { passive: true });
+    scroller.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+    scroller.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    scroller.addEventListener('pointerup', handlePointerUp, { passive: true });
+    scroller.addEventListener('pointercancel', handlePointerUp, { passive: true });
+
+    return () => {
+      stop();
+      mediaQuery.removeEventListener('change', sync);
+      scroller.removeEventListener('touchstart', handleTouchStart);
+      scroller.removeEventListener('touchend', handleTouchEnd);
+      scroller.removeEventListener('touchcancel', handleTouchEnd);
+      scroller.removeEventListener('pointerdown', handlePointerDown);
+      scroller.removeEventListener('pointerup', handlePointerUp);
+      scroller.removeEventListener('pointercancel', handlePointerUp);
+    };
+  }, []);
+
   return (
     <>
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
@@ -255,16 +385,15 @@ const Navbar = () => {
 
         {/* ── Row 2: Services strip ── */}
         <div className="navbar-services">
-          <div className="navbar-services-scroll">
-            {serviceLinks.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                className={`service-pill${s.type ? ` service-pill--${s.type}` : ''}`}
-              >
-                {s.label}
-              </a>
-            ))}
+          <div className="navbar-services-scroll" ref={servicesScrollRef}>
+            <div className="navbar-services-track">
+              <div className="navbar-services-group">
+                {serviceLinks.map((s) => renderServicePill(s))}
+              </div>
+              <div className="navbar-services-group navbar-services-group--duplicate" aria-hidden="true">
+                {serviceLinks.map((s) => renderServicePill(s, 'dup-'))}
+              </div>
+            </div>
           </div>
         </div>
 
