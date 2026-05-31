@@ -90,6 +90,15 @@ const ProductGallery = () => {
               width="400" height="500"
               layout="constrained"
             ></shopify-media>
+            
+            <!-- Elegant Hover-Reveal Glass Actions Panel -->
+            <div class="product-card-hover-actions">
+              <div class="product-card-hover-row">
+                <button type="button" class="gallery-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
+                <button type="button" class="gallery-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
+              </div>
+              <button type="button" class="gallery-action-btn view-details" onclick="event.stopPropagation(); window.__openLookbookLightbox(this)">View Details</button>
+            </div>
           </div>
           <div class="product-info">
             <h3 class="product-name"><shopify-data query="product.title"></shopify-data></h3>
@@ -98,13 +107,6 @@ const ProductGallery = () => {
             </p>
             <span class="product-handle" hidden><shopify-data query="product.handle"></shopify-data></span>
             <span class="product-variant-id" hidden><shopify-data query="product.selectedOrFirstAvailableVariant.id"></shopify-data></span>
-            <div class="product-card-actions">
-              <button type="button" class="gallery-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
-              <button type="button" class="gallery-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
-            </div>
-            <button type="button" class="product-card-hint" onclick="window.__openLookbookLightbox(this)">
-              View Details
-            </button>
           </div>
         </div>
       </template>

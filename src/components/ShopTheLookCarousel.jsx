@@ -416,19 +416,22 @@ const STL_CSS = `
 
   @media (max-width: 480px) {
     .stl-section {
-      --stl-card-w: 78vw;
-      --stl-card-h: calc(100svh - 230px);
+      --stl-card-w: 245px;
+      --stl-card-h: 345px;
       padding: 40px 0 56px;
     }
     .stl-card__image-area {
-      flex: 0 0 68%;
+      flex: 0 0 65%;
     }
     .stl-card__info {
-      flex: 0 0 32%;
-      padding: 12px 14px 14px;
+      padding: 10px 12px 12px;
     }
     .stl-card__name {
-      font-size: 21px;
+      font-size: 17px;
+    }
+    .stl-action-btn {
+      padding: 8px 6px !important;
+      font-size: 9px !important;
     }
     .stl-header {
       margin-bottom: 32px;

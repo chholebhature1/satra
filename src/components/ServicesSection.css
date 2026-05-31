@@ -337,15 +337,42 @@
   }
 }
 
+@media (max-width: 600px) {
+  .services-grid,
+  .services-grid--featured {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 16px !important;
+    padding: 12px 4px 24px 4px !important;
+    width: 100vw !important;
+    margin-left: -24px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+
+  .services-grid::-webkit-scrollbar,
+  .services-grid--featured::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .service-card,
+  .service-card--featured {
+    flex: 0 0 280px !important;
+    scroll-snap-align: center !important;
+    box-sizing: border-box !important;
+    min-height: 290px !important;
+  }
+
+  .services-links-panel {
+    padding: 1.25rem;
+  }
+}
+
 @media (max-width: 540px) {
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .service-card {
-    padding: 1.5rem;
-  }
-
   .services-links-panel {
     padding: 1.25rem;
   }

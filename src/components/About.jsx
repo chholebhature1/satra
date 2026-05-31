@@ -29,7 +29,7 @@ const About = () => {
       <div className="container about-container">
         <div className="about-image-wrapper animate-on-scroll slide-up">
           <img 
-            src="/gallery-1.jpeg" 
+            src="/gallery-1.jpg" 
             alt="Satrangi Designer Studio" 
             className="about-image"
           />
@@ -37,13 +37,13 @@ const About = () => {
         </div>
         
         <div className="about-content animate-on-scroll fade-in-late">
-          <h2 className="heading-lg">Born in Delhi, <br/><span className="text-gold">Made for You</span></h2>
+          <h2 className="heading-lg">The Satrangi Collective <br/><span className="text-gold">Crafting Your Vision</span></h2>
           <div className="about-text">
             <p>
-              Satrangi Designer Studio started with a simple idea — that every woman in Delhi should have access to beautiful bridal and ethnic wear, whether she's buying or renting. We believe your outfit should feel as special as the occasion itself.
+              At the heart of Satrangi lies a passionate collective of master designers, visionary stylists, and multi-generational <em>Karigars</em> (artisans) who breathe life into fine textiles. Nestled in New Delhi's rich heritage of craft, our boutique studio is a creative sanctuary where legacy hand-embroidery meets contemporary elegance, transforming raw silks and soft georgettes into wearable poetry.
             </p>
             <p>
-              From bridal lehengas to festive sarees, custom suits to kids' outfits — we do it all from our studio in New Delhi. Walk in, share your vision, and we'll make it happen.
+              From bespoke bridal couture hand-stitched over hundreds of hours to curating premium lehengas and royal jewellery for rent, our dedicated team works hand-in-hand with you. We don't just tailor outfits; we weave personal stories and craft enduring memories, ensuring that every thread and silhouette makes you feel like royalty.
             </p>
           </div>
           <div className="about-services-wrap">
