@@ -8,18 +8,21 @@ const signatureServices = [
     icon: Sparkles,
     title: 'Bridal Couture',
     desc: 'Exquisite custom-crafted bridal lehengas, hand-embroidered wedding sarees, and magnificent luxury designer ensembles tailored to make your big day unforgettable.',
+    bg: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 2,
     icon: Gem,
     title: 'Jewellery on Rent',
     desc: 'Statement bridal & occasion jewellery on rent — kundan, polki & gold-plated sets.',
+    bg: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 3,
     icon: Scissors,
     title: 'Customisation',
     desc: 'Your fabric, your vision, our craft. Every stitch tailored exclusively for you.',
+    bg: 'https://images.unsplash.com/photo-1556905200-279565513a2d?q=80&w=600&auto=format&fit=crop',
   },
 ];
 
@@ -29,36 +32,39 @@ const wardrobeServices = [
     icon: Layers,
     title: 'Sarees',
     desc: 'Silk, georgette, banarasi & designer sarees curated for every occasion.',
+    bg: 'https://images.unsplash.com/photo-1610030470298-4156fb116311?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 5,
     icon: Star,
     title: 'Lehenga on Rent',
     desc: 'Bridal & party lehengas available on rent. Wear luxury without the full price.',
+    bg: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=600&auto=format&fit=crop',
   },
   {
     id: 6,
     icon: Ruler,
     title: 'Suits (Stitched / Unstitched)',
     desc: 'Designer suits in ready-to-wear and fabric form — festive, casual & formal.',
+    bg: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop',
   },
 ];
 
 const studioSupport = [
   {
-    id: 4,
+    id: 7,
     icon: Heart,
     title: 'Kids Customisation',
     desc: 'Adorable custom ethnic outfits for your little ones — weddings, festivals & beyond.',
   },
   {
-    id: 5,
+    id: 8,
     icon: Lightbulb,
     title: 'Designer Advice',
     desc: 'One-on-one styling consultation — fabric selection, colour matching & outfit planning.',
   },
   {
-    id: 6,
+    id: 9,
     icon: Palette,
     title: 'Designing',
     desc: 'From mood board to masterpiece — in-house designers craft exclusive pieces for you.',
@@ -70,8 +76,19 @@ const renderServiceCard = (service, variant = '') => {
 
   return (
     <div className={`service-card${variant ? ` service-card--${variant}` : ''}`} key={service.id}>
+      {/* Background fabric image overlay */}
+      {service.bg && (
+        <div 
+          className="service-card__bg-image" 
+          style={{ backgroundImage: `url('${service.bg}')` }}
+        />
+      )}
+      <div className="service-card__glow-overlay"></div>
+
       <div className="service-icon-wrap">
-        <Icon size={22} strokeWidth={1.5} />
+        <div className="service-icon-inner-frame">
+          <Icon size={20} strokeWidth={1.5} />
+        </div>
       </div>
       <h3 className="service-title">{service.title}</h3>
       <p className="service-desc">{service.desc}</p>

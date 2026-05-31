@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { SHOPIFY_STORE_DOMAIN } from '../lib/shopifyConfig';
+import { addVariantToCart, buyNowVariant, openCartDrawer } from '../lib/shopifyStorefrontCart';
 
 
 const STL_CSS = `
@@ -236,6 +237,51 @@ const STL_CSS = `
     margin: 0;
   }
 
+  /* ── Card buy actions ── */
+  .stl-card__actions {
+    display: none;
+    gap: 8px;
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .swiper-slide-active .stl-card__actions {
+    display: flex;
+  }
+
+  .stl-action-btn {
+    flex: 1;
+    border: none;
+    border-radius: 2px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .stl-action-btn.add-to-cart {
+    background: transparent;
+    border: 1px solid var(--forest-green);
+    color: var(--forest-green);
+  }
+
+  .stl-action-btn.add-to-cart:hover {
+    background: rgba(22, 54, 42, 0.05);
+  }
+
+  .stl-action-btn.buy-now {
+    background: var(--forest-green);
+    color: white;
+  }
+
+  .stl-action-btn.buy-now:hover {
+    background: #1f4a39;
+  }
+
   .stl-view-link {
     display: block;
     font-family: 'DM Sans', sans-serif;
@@ -411,6 +457,10 @@ const STL_SLIDE_TEMPLATE = `
         <p class="stl-card__price"><shopify-money query="product.selectedOrFirstAvailableVariant.price" format="money_with_currency"></shopify-money></p>
         <span class="stl-product-handle" hidden><shopify-data query="product.handle"></shopify-data></span>
         <span class="stl-variant-id" hidden><shopify-data query="product.selectedOrFirstAvailableVariant.id"></shopify-data></span>
+        <div class="stl-card__actions">
+          <button class="stl-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
+          <button class="stl-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
+        </div>
         <button class="stl-view-link" onclick="window.__openShopifyProductPage(this)">View Product &#8594;</button>
       </div>
     </div>
@@ -440,6 +490,52 @@ const ShopTheLookCarousel = () => {
   useEffect(() => {
     const cleanupFns = [];
     let swiperInitialized = false;
+
+    // Global Add to Cart and Buy Now handlers
+    window.__addLookbookToCart = async (btn) => {
+      const card = btn.closest('.stl-card');
+      const variantEl = card?.querySelector('.stl-variant-id');
+      const variantId = variantEl ? variantEl.textContent.trim() : '';
+      if (!variantId) return;
+
+      const originalText = btn.textContent;
+      btn.textContent = 'Adding...';
+      btn.disabled = true;
+      try {
+        await addVariantToCart(variantId, 1);
+        openCartDrawer();
+      } catch (e) {
+        console.error(e);
+        alert('Could not add to cart: ' + e.message);
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    };
+
+    window.__buyLookbookNow = async (btn) => {
+      const card = btn.closest('.stl-card');
+      const variantEl = card?.querySelector('.stl-variant-id');
+      const variantId = variantEl ? variantEl.textContent.trim() : '';
+      if (!variantId) return;
+
+      const originalText = btn.textContent;
+      btn.textContent = 'Buying...';
+      btn.disabled = true;
+      try {
+        await buyNowVariant(variantId, 1);
+      } catch (e) {
+        console.error(e);
+        alert('Checkout failed: ' + e.message);
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    };
+
+    cleanupFns.push(() => {
+      delete window.__addLookbookToCart;
+      delete window.__buyLookbookNow;
+    });
 
     const resolveSwiperElement = () => swiperRef.current || null;
 

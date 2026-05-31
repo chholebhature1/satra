@@ -331,3 +331,58 @@
     aspect-ratio: 4 / 5;
   }
 }
+
+/* ── Product Card Actions & Buy Buttons (Signature Edit) ── */
+.product-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 1.2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gallery-action-btn {
+  flex: 1;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.8rem 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.gallery-action-btn.add-to-cart {
+  background: transparent;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+}
+
+.gallery-action-btn.add-to-cart:hover {
+  background: rgba(22, 54, 43, 0.05);
+}
+
+.gallery-action-btn.buy-now {
+  background: var(--text-primary);
+  color: var(--surface-beige);
+}
+
+.gallery-action-btn.buy-now:hover {
+  background: var(--accent-gold-dark);
+  box-shadow: 0 4px 14px rgba(22, 54, 43, 0.12);
+}
+
+/* Make View Details wide secondary block below them */
+.product-card-hint {
+  width: 100%;
+  margin-top: 0.75rem !important;
+  box-sizing: border-box;
+}

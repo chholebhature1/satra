@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { addVariantToCart, buyNowVariant, openCartDrawer } from '../lib/shopifyStorefrontCart';
 import './ProductGallery.css';
 
 // ⚠️ Update these handles to match your exact Shopify collection handles
@@ -37,6 +38,47 @@ const ProductGallery = () => {
 
     emptyStateShownRef.current = false;
 
+    // Global Add to Cart and Buy Now handlers
+    window.__addLookbookToCart = async (btn) => {
+      const card = btn.closest('.product-card, .stl-card');
+      const variantEl = card?.querySelector('.product-variant-id, .stl-variant-id');
+      const variantId = variantEl ? variantEl.textContent.trim() : '';
+      if (!variantId) return;
+
+      const originalText = btn.textContent;
+      btn.textContent = 'Adding...';
+      btn.disabled = true;
+      try {
+        await addVariantToCart(variantId, 1);
+        openCartDrawer();
+      } catch (e) {
+        console.error(e);
+        alert('Could not add to cart: ' + e.message);
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    };
+
+    window.__buyLookbookNow = async (btn) => {
+      const card = btn.closest('.product-card, .stl-card');
+      const variantEl = card?.querySelector('.product-variant-id, .stl-variant-id');
+      const variantId = variantEl ? variantEl.textContent.trim() : '';
+      if (!variantId) return;
+
+      const originalText = btn.textContent;
+      btn.textContent = 'Buying...';
+      btn.disabled = true;
+      try {
+        await buyNowVariant(variantId, 1);
+      } catch (e) {
+        console.error(e);
+        alert('Checkout failed: ' + e.message);
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    };
+
     const { handle, isRental } = COLLECTION_MAP[activeFilter];
 
     const cardTemplate = `
@@ -56,6 +98,10 @@ const ProductGallery = () => {
             </p>
             <span class="product-handle" hidden><shopify-data query="product.handle"></shopify-data></span>
             <span class="product-variant-id" hidden><shopify-data query="product.selectedOrFirstAvailableVariant.id"></shopify-data></span>
+            <div class="product-card-actions">
+              <button type="button" class="gallery-action-btn add-to-cart" onclick="event.stopPropagation(); window.__addLookbookToCart(this)">Add to Cart</button>
+              <button type="button" class="gallery-action-btn buy-now" onclick="event.stopPropagation(); window.__buyLookbookNow(this)">Buy Now</button>
+            </div>
             <button type="button" class="product-card-hint" onclick="window.__openLookbookLightbox(this)">
               View Details
             </button>
@@ -164,6 +210,8 @@ const ProductGallery = () => {
 
     return () => {
       cleanupFns.forEach((cleanup) => cleanup());
+      delete window.__addLookbookToCart;
+      delete window.__buyLookbookNow;
     };
   }, [activeFilter]);
 
