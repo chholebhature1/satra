@@ -28,7 +28,7 @@ const VideoHighlights = () => {
     <section className="video-highlights section-padding" id="studio" ref={sectionRef}>
       <div className="container">
         <div className="gallery-header text-center" style={{ marginBottom: '3rem' }}>
-          <h2 className="heading-lg">Behind the Seams</h2>
+          <h2 className="heading-lg">Behind the Seens</h2>
           <p className="gallery-subtitle">Experience the craftsmanship in motion.</p>
         </div>
 

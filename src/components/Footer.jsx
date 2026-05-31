@@ -50,7 +50,7 @@ const Footer = () => {
               <li><a href="#services">Our Services</a></li>
               <li><a href="#collections">Collections</a></li>
               <li><a href="#about">Our Story</a></li>
-              <li><a href="#studio">Behind the Seams</a></li>
+              <li><a href="#studio">Behind the Seens</a></li>
             </ul>
           </div>
 
@@ -79,7 +79,7 @@ const Footer = () => {
 
           <div className="footer-instagram-card">
             <h4 className="footer-heading">Instagram Studio</h4>
-            <p className="instagram-card-text">Step behind the seams. Scan with your phone or tap below to explore live lookbooks, custom client reels, and new design drops.</p>
+            <p className="instagram-card-text">Step behind the seens. Scan with your phone or tap below to explore live lookbooks, custom client reels, and new design drops.</p>
             <div className="instagram-qr-wrap">
               <img
                 src="/satrangi-qr.png"
