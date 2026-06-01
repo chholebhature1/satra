@@ -254,6 +254,8 @@
 @media (max-width: 900px) {
   .hero {
     height: auto;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .hero-video-wrapper .hero-generated-video {
@@ -261,7 +263,19 @@
   }
 
   .hero-carousel-overlay {
-    display: none;
+    position: static;
+    width: 100%;
+    height: auto;
+    display: block;
+    padding-top: 0;
+    margin-top: 1.5rem;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .hero-carousel-overlay .stl-section {
+    padding: 32px 0 24px;
+    min-height: 0;
   }
 
   .hero-content {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const PageLoader = () => {
+const PageLoader = ({ ready = false }) => {
   const [visible, setVisible]     = useState(true);
   const [fading, setFading]       = useState(false);
   const [logoReady, setLogoReady] = useState(false);
@@ -10,16 +10,32 @@ const PageLoader = () => {
     mounted.current = true;
 
     const t1 = setTimeout(() => { if (mounted.current) setLogoReady(true); }, 150);
-    const t2 = setTimeout(() => { if (mounted.current) setFading(true); },   1300);
-    const t3 = setTimeout(() => { if (mounted.current) setVisible(false); }, 1950);
-    // hard safety fallback
+    const t2 = setTimeout(() => { if (mounted.current && ready) setFading(true); }, 250);
+    const t3 = setTimeout(() => { if (mounted.current && ready) setVisible(false); }, 900);
+    // hard safety fallback so the app never gets stuck behind the loader
     const t4 = setTimeout(() => { if (mounted.current) setVisible(false); }, 3500);
 
     return () => {
       mounted.current = false;
       clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4);
     };
-  }, []);
+  }, [ready]);
+
+  useEffect(() => {
+    if (!ready || !mounted.current) return undefined;
+
+    const fadeTimer = setTimeout(() => {
+      if (mounted.current) setFading(true);
+    }, 80);
+    const hideTimer = setTimeout(() => {
+      if (mounted.current) setVisible(false);
+    }, 650);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [ready]);
 
   if (!visible) return null;
 

@@ -1,11 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './VideoHighlights.css';
 
 const VideoHighlights = () => {
   const sectionRef = useRef(null);
+  const [shouldLoadVideos, setShouldLoadVideos] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const section = sectionRef.current;
+    if (!section) return undefined;
+
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldLoadVideos(true);
+            sectionObserver.disconnect();
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    const itemObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -16,11 +32,14 @@ const VideoHighlights = () => {
       { threshold: 0.2 }
     );
 
-    const elements = sectionRef.current.querySelectorAll('.highlight-video-wrapper');
-    elements.forEach((el) => observer.observe(el));
+    const elements = section.querySelectorAll('.highlight-video-wrapper');
+    elements.forEach((el) => itemObserver.observe(el));
+    sectionObserver.observe(section);
 
     return () => {
-      elements.forEach((el) => observer.unobserve(el));
+      elements.forEach((el) => itemObserver.unobserve(el));
+      sectionObserver.disconnect();
+      itemObserver.disconnect();
     };
   }, []);
 
@@ -34,30 +53,34 @@ const VideoHighlights = () => {
 
         <div className="highlights-grid">
           <div className="highlight-video-wrapper">
-            <video 
+            <video
+              key={`craftsmanship-${shouldLoadVideos ? 'loaded' : 'placeholder'}`}
               className="highlight-video"
-              autoPlay 
-              muted 
-              loop 
+              autoPlay
+              muted
+              loop
               playsInline
-              src="/craftsmanship.mp4"
-            >
-            </video>
+              preload="none"
+              poster="/highlight-craftsmanship-poster.jpg"
+              src={shouldLoadVideos ? '/craftsmanship.mp4' : undefined}
+            />
             <div className="video-overlay">
               <span className="video-label">The Studio</span>
             </div>
           </div>
           
           <div className="highlight-video-wrapper" style={{ transitionDelay: '0.2s' }}>
-            <video 
+            <video
+              key={`collection-${shouldLoadVideos ? 'loaded' : 'placeholder'}`}
               className="highlight-video"
-              autoPlay 
-              muted 
-              loop 
+              autoPlay
+              muted
+              loop
               playsInline
-              src="/collection.mp4"
-            >
-            </video>
+              preload="none"
+              poster="/highlight-collection-poster.jpg"
+              src={shouldLoadVideos ? '/collection.mp4' : undefined}
+            />
             <div className="video-overlay">
               <span className="video-label">Craftsmanship</span>
             </div>

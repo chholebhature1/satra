@@ -39,7 +39,7 @@ const About = () => {
         <div className="about-content animate-on-scroll fade-in-late">
           <div className="about-heading-group">
             <p className="about-heading-eyebrow">Team Satrangi Boutique</p>
-            <h2 className="heading-lg">Your Design's four pillar</h2>
+            <h2 className="heading-lg">Your Design’s Four Pillars</h2>
             <p className="about-heading-subtitle">By Rangmohini</p>
           </div>
           <div className="about-text">

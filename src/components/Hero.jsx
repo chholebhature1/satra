@@ -3,11 +3,11 @@ import HeroBackgroundVideo from './HeroBackgroundVideo';
 import ShopTheLookCarousel from './ShopTheLookCarousel';
 import './Hero.css';
 
-const Hero = () => {
+const Hero = ({ showCarousel = true, onVideoReady = () => {} }) => {
   return (
     <section className="hero" id="home">
       <div className="hero-video-wrapper">
-        <HeroBackgroundVideo />
+        <HeroBackgroundVideo onReady={onVideoReady} />
         <div className="hero-overlay"></div>
       </div>
 
@@ -44,9 +44,11 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="hero-carousel-overlay">
-        <ShopTheLookCarousel />
-      </div>
+      {showCarousel && (
+        <div className="hero-carousel-overlay">
+          <ShopTheLookCarousel />
+        </div>
+      )}
     </section>
   );
 };

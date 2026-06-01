@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import ShopTheLookCarousel from './components/ShopTheLookCarousel';
 import AnnouncementBar from './components/AnnouncementBar';
 import ServicesSection from './components/ServicesSection';
 import About from './components/About';
@@ -20,6 +19,21 @@ import './App.css';
 
 /* eslint-disable react/no-unknown-property */
 function App() {
+  const [heroReady, setHeroReady] = useState(false);
+  const [contentReady, setContentReady] = useState(false);
+
+  useEffect(() => {
+    if (!heroReady) return undefined;
+
+    const revealTimer = window.setTimeout(() => setContentReady(true), 120);
+    return () => window.clearTimeout(revealTimer);
+  }, [heroReady]);
+
+  useEffect(() => {
+    const fallbackTimer = window.setTimeout(() => setHeroReady(true), 3500);
+    return () => window.clearTimeout(fallbackTimer);
+  }, []);
+
   return (
     <>
       <AnnouncementBar onVisibilityChange={() => {}} />
@@ -33,26 +47,30 @@ function App() {
         language="en"
       ></shopify-store>
 
-      <PageLoader />
+      <PageLoader ready={heroReady} />
       <div className="app-container">
         <Navbar />
         <main>
-          <Hero />
-          {/* Carousel is shown as desktop overlay inside Hero; this renders it for mobile only */}
-          <div className="mobile-carousel-section">
-            <ShopTheLookCarousel />
-          </div>
-          <ServicesSection />
-          <About />
-          <ProductGallery />
-          <TestimonialsSection />
-          <VideoHighlights />
-          <ContactSection />
+          <Hero showCarousel={contentReady} onVideoReady={() => setHeroReady(true)} />
+          {contentReady && (
+            <>
+              <ServicesSection />
+              <About />
+              <ProductGallery />
+              <TestimonialsSection />
+              <VideoHighlights />
+              <ContactSection />
+            </>
+          )}
         </main>
-        <Footer />
-        <WhatsAppButton />
-        <ScrollToTop />
-        <CartDrawer />
+        {contentReady && (
+          <>
+            <Footer />
+            <WhatsAppButton />
+            <ScrollToTop />
+            <CartDrawer />
+          </>
+        )}
       </div>
     </>
   );

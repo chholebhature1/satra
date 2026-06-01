@@ -1,5 +1,4 @@
-import React, { useRef, useState } from 'react';
-import { Play } from 'lucide-react';
+import React from 'react';
 import './TestimonialsSection.css';
 
 const testimonialReels = [
@@ -30,30 +29,8 @@ const testimonialReels = [
 ];
 
 const TestimonialsSection = () => {
-  const videoRefs = useRef({});
-  const [activeVideoId, setActiveVideoId] = useState(null);
   const featuredReel = testimonialReels.find((reel) => reel.label === 'SATRANGI REEL 2') || testimonialReels[0];
   const supportingReels = testimonialReels.filter((reel) => reel.id !== featuredReel.id);
-
-  const handlePlay = async (videoId) => {
-    const video = videoRefs.current[videoId];
-    if (!video) return;
-
-    Object.entries(videoRefs.current).forEach(([key, otherVideo]) => {
-      if (Number(key) !== videoId) {
-        otherVideo.pause();
-      }
-    });
-
-    setActiveVideoId(videoId);
-
-    try {
-      await video.play();
-    } catch (error) {
-      console.error(error);
-      setActiveVideoId(null);
-    }
-  };
 
   const renderReelCard = (reel, variant = 'compact') => {
     const featured = variant === 'featured';
@@ -61,45 +38,19 @@ const TestimonialsSection = () => {
     return (
       <article className={`testimonial-video-card testimonial-video-card--${variant}`} key={reel.id}>
         <div className={`testimonial-video-frame${featured ? ' testimonial-video-frame--featured' : ''}`}>
-          <video
+          <img
             className="testimonial-video"
-            ref={(node) => {
-              if (node) {
-                videoRefs.current[reel.id] = node;
-              } else {
-                delete videoRefs.current[reel.id];
-              }
-            }}
-            src={encodeURI(reel.src)}
-            poster={encodeURI(reel.poster)}
-            playsInline
-            preload="none"
-            aria-label={reel.label}
-            onPlay={() => setActiveVideoId(reel.id)}
-            onPause={() => setActiveVideoId((current) => (current === reel.id ? null : current))}
-            onEnded={() => setActiveVideoId((current) => (current === reel.id ? null : current))}
+            src={encodeURI(reel.poster)}
+            alt={`${reel.title} poster`}
+            loading="lazy"
+            decoding="async"
           />
-
-          <button
-            type="button"
-            className={`testimonial-video-play-button${activeVideoId === reel.id ? ' testimonial-video-play-button--hidden' : ''}${featured ? ' testimonial-video-play-button--featured' : ''}`}
-            onClick={() => handlePlay(reel.id)}
-            aria-label={`Play ${reel.label}`}
-          >
-            <span className={`testimonial-video-play-chip${featured ? ' testimonial-video-play-chip--featured' : ''}`} aria-hidden="true">
-              <Play size={featured ? 34 : 30} fill="currentColor" strokeWidth={0} />
-            </span>
-            <span className="testimonial-video-play-text">Tap to play</span>
-          </button>
-
-          {featured && <span className="testimonial-featured-badge">Featured reel</span>}
         </div>
 
         <div className={`testimonial-video-overlay${featured ? ' testimonial-video-overlay--featured' : ''}`}>
           <p className="testimonial-video-label">{reel.label}</p>
           <h3 className="testimonial-video-title">{reel.title}</h3>
           <p className="testimonial-video-copy">{reel.description}</p>
-          {featured && <p className="testimonial-featured-note">The reel we want you to notice first.</p>}
         </div>
       </article>
     );
@@ -112,7 +63,7 @@ const TestimonialsSection = () => {
           <p className="testimonials-eyebrow">STUDIO REELS</p>
           <h2 className="heading-lg">SATRANGI <span className="text-gold">Reels</span></h2>
           <p className="testimonials-subtitle">
-            Three studio reels, with the featured treatment reserved for smaller screens.
+            Three studio reels shown as poster stills so the section stays light and fast.
           </p>
           <div className="testimonials-gold-rule"></div>
         </div>
