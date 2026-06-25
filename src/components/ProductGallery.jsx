@@ -168,46 +168,45 @@ const ProductGallery = () => {
 
       listCtx.dataset.galleryBound = 'true';
       listCtxRef.current = listCtx;
-      let hasLoaded = false;
+      let prevCardCount = 0;
 
-      const onProductsLoaded = () => {
-        hasLoaded = true;
-        revealCards();
-        evaluateEmptyState();
-
-        // Determine if there are more products to load
+      const checkPagination = () => {
         const visibleCards = gridRef.current?.querySelectorAll('.product-card').length || 0;
-        const requestedCount = parseInt(listCtx.getAttribute('first') || '12', 10);
-        // If we got as many products as we requested, there might be more
-        setHasNextPage(visibleCards >= requestedCount);
-        setLoadingMore(false);
-      };
-
-      const mutationObserver = new MutationObserver(() => {
-        revealCards();
-        if (hasLoaded) {
+        if (visibleCards > 0 && visibleCards !== prevCardCount) {
+          prevCardCount = visibleCards;
+          revealCards();
           evaluateEmptyState();
-          // Re-check pagination after DOM updates
-          const visibleCards = gridRef.current?.querySelectorAll('.product-card').length || 0;
           const requestedCount = parseInt(listCtx.getAttribute('first') || '12', 10);
+          // If we received as many as we asked for, there are likely more
           setHasNextPage(visibleCards >= requestedCount);
           setLoadingMore(false);
         }
+      };
+
+      // Listen for the Shopify custom event
+      const onProductsLoaded = () => {
+        checkPagination();
+      };
+
+      // Also watch DOM mutations as a fallback
+      const mutationObserver = new MutationObserver(() => {
+        checkPagination();
       });
 
       listCtx.addEventListener('shopify-list-context-update', onProductsLoaded);
       mutationObserver.observe(listCtx, { childList: true, subtree: true });
 
-      requestAnimationFrame(() => {
-        revealCards();
-        if (hasLoaded) {
-          evaluateEmptyState();
-        }
-      });
+      // Poll briefly in case both event and mutation are missed
+      const pollInterval = setInterval(() => {
+        checkPagination();
+      }, 500);
+      const pollTimeout = setTimeout(() => clearInterval(pollInterval), 10000);
 
       cleanupFns.push(() => {
         listCtx.removeEventListener('shopify-list-context-update', onProductsLoaded);
         mutationObserver.disconnect();
+        clearInterval(pollInterval);
+        clearTimeout(pollTimeout);
         delete listCtx.dataset.galleryBound;
         listCtxRef.current = null;
       });
