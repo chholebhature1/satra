@@ -29,7 +29,10 @@ const EMPTY_STATE_MARKUP = `
 
 const ProductGallery = () => {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const gridRef   = useRef(null);
+  const listCtxRef = useRef(null);
   const emptyStateShownRef = useRef(false);
 
   // Inject Shopify product grid with a luxury lookbook presentation
@@ -37,6 +40,8 @@ const ProductGallery = () => {
     if (!gridRef.current) return;
 
     emptyStateShownRef.current = false;
+    setHasNextPage(false);
+    setLoadingMore(false);
 
     // Global Add to Cart and Buy Now handlers
     window.__addLookbookToCart = async (btn) => {
@@ -162,18 +167,31 @@ const ProductGallery = () => {
       if (!listCtx || listCtx.dataset.galleryBound === 'true') return false;
 
       listCtx.dataset.galleryBound = 'true';
+      listCtxRef.current = listCtx;
       let hasLoaded = false;
 
       const onProductsLoaded = () => {
         hasLoaded = true;
         revealCards();
         evaluateEmptyState();
+
+        // Determine if there are more products to load
+        const visibleCards = gridRef.current?.querySelectorAll('.product-card').length || 0;
+        const requestedCount = parseInt(listCtx.getAttribute('first') || '12', 10);
+        // If we got as many products as we requested, there might be more
+        setHasNextPage(visibleCards >= requestedCount);
+        setLoadingMore(false);
       };
 
       const mutationObserver = new MutationObserver(() => {
         revealCards();
         if (hasLoaded) {
           evaluateEmptyState();
+          // Re-check pagination after DOM updates
+          const visibleCards = gridRef.current?.querySelectorAll('.product-card').length || 0;
+          const requestedCount = parseInt(listCtx.getAttribute('first') || '12', 10);
+          setHasNextPage(visibleCards >= requestedCount);
+          setLoadingMore(false);
         }
       });
 
@@ -191,6 +209,7 @@ const ProductGallery = () => {
         listCtx.removeEventListener('shopify-list-context-update', onProductsLoaded);
         mutationObserver.disconnect();
         delete listCtx.dataset.galleryBound;
+        listCtxRef.current = null;
       });
 
       return true;
@@ -216,6 +235,17 @@ const ProductGallery = () => {
     };
   }, [activeFilter]);
 
+  const handleLoadMore = () => {
+    const listCtx = listCtxRef.current;
+    if (!listCtx) return;
+
+    setLoadingMore(true);
+
+    // Increase the "first" count to load the next batch of products
+    const currentFirst = parseInt(listCtx.getAttribute('first') || '12', 10);
+    listCtx.setAttribute('first', String(currentFirst + 12));
+  };
+
   return (
     <section className="gallery section-padding" id="collections">
       <div className="container">
@@ -239,6 +269,18 @@ const ProductGallery = () => {
 
         {/* Shopify product grid injected here via ref */}
         <div className="product-grid" ref={gridRef} />
+
+        {hasNextPage && (
+          <div className="gallery-load-more text-center">
+            <button
+              className="btn-primary load-more-btn"
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+            >
+              {loadingMore ? 'Loading...' : 'Load More'}
+            </button>
+          </div>
+        )}
 
         <div className="gallery-footer text-center">
           <p className="gallery-footer-copy">For sizing, availability, rent options, and custom work, message us directly.</p>

@@ -455,3 +455,37 @@
   border-color: var(--text-primary);
   color: var(--text-primary);
 }
+
+/* ── Load More Button ── */
+.gallery-load-more {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.load-more-btn {
+  min-width: 180px;
+  padding: 0.9rem 2.2rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid var(--text-primary);
+  border-radius: 4px;
+  background: var(--text-primary);
+  color: var(--surface-beige);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background: var(--accent-gold-dark);
+  border-color: var(--accent-gold-dark);
+  box-shadow: 0 10px 22px rgba(22, 54, 43, 0.16);
+  transform: translateY(-1px);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
